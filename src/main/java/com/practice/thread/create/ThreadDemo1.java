@@ -10,7 +10,7 @@ package com.practice.thread.create;
  */
 /**
  * 
- * 创建方式二 ：实现 Runnable
+ * 创建方式一 ：继承 Thread
  *
  * 创建三个窗口卖票，总票数为100张，使用继承自Thread方式
  * 用静态变量保证三个线程的数据独一份
@@ -19,44 +19,38 @@ package com.practice.thread.create;
  *
  * */
 
-public class ThreadDemo1 implements Runnable{
+public class ThreadDemo1 extends Thread{
 
-	private int ticket = 100;
+	private static int ticket = 100; //将其加载在类的静态区，所有线程共享该静态变量
 
-	public void run() {
-		// TODO Auto-generated method stub
-		while(true){
-            if(ticket>0){
-//                try {
-//                    sleep(100);
-//                } catch (InterruptedException e) {
-//                    e.printStackTrace();
-//                }
-                System.out.println(Thread.currentThread().getName()+"当前售出第"+ticket+"张票");
-                ticket--;
-            }else{
-                break;
-            }
-        }
-	}
-	
-	public static void main(String[] args){
-		ThreadDemo1 w = new ThreadDemo1();
-    
-	    //虽然有三个线程，但是只有一个窗口类实现的Runnable方法，由于三个线程共用一个window对象，所以自动共用100张票
-	    
-	    Thread t1=new Thread(w);
-	    Thread t2=new Thread(w);
-	    Thread t3=new Thread(w);
-	
-	    t1.setName("售票口1");
-	    t2.setName("售票口2");
-	    t3.setName("售票口3");
-	
-	    t1.start();
-	    t2.start();
-	    t3.start();
-	}
+   @Override
+   public void run() {
+       while(true){
+           if(ticket>0){
+                try {
+                	Thread.sleep(100);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+               System.out.println(getName()+" 当前售出第 "+ticket+" 张票");
+               ticket--;
+           }else{
+               break;
+           }
+       }
+   }
 
-   
+public static void main(String[] args){
+	ThreadDemo1 t1 = new ThreadDemo1();
+	ThreadDemo1 t2 = new ThreadDemo1();
+	ThreadDemo1 t3 = new ThreadDemo1();
+
+    t1.setName("售票口1");
+    t2.setName("售票口2");
+    t3.setName("售票口3");
+
+    t1.start();
+    t2.start();
+    t3.start();
+}
 }
